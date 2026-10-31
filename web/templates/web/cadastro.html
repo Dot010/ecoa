@@ -1,0 +1,22 @@
+{% extends "web/base.html" %}
+{% block titulo %}Criar conta{% endblock %}
+
+{% block corpo %}
+<div class="acesso">
+  <div class="acesso-caixa">
+    <section class="acesso-texto">
+      <span class="marca">ecoa</span>
+      <h1>Crie sua conta<br>e comece a ecoar.</h1>
+    </section>
+    <section class="cartao acesso-form" aria-label="Criar conta">
+      <h2 class="subtitulo">Criar conta</h2>
+      <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button class="botao" type="submit" style="width: 100%">Criar conta</button>
+      </form>
+      <p class="suave" style="margin-top: 16px">Já tem conta? <a href="{% url 'entrar' %}">Entrar</a></p>
+    </section>
+  </div>
+</div>
+{% endblock %}

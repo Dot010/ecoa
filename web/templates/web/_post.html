@@ -1,0 +1,57 @@
+<article class="cartao post">
+  <a href="{% url 'perfil' post.author.username %}">{% include "web/_avatar.html" with pessoa=post.author %}</a>
+  <div class="post-corpo">
+    <div>
+      <a href="{% url 'perfil' post.author.username %}" style="font-weight: 800; color: inherit; text-decoration: none">{{ post.author.name|default:post.author.username }}</a>
+      <span class="suave">@{{ post.author.username }} · {{ post.created_at|timesince }} atrás</span>
+    </div>
+    <p class="post-texto">{{ post.content }}</p>
+
+    <div class="acoes">
+      {% if user.is_authenticated %}
+        <form method="post" action="{% url 'curtir' post.id %}">
+          {% csrf_token %}
+          <input type="hidden" name="next" value="{{ request.get_full_path }}">
+          {% if post.id in curtidos %}
+            <button class="botao-icone curtido" type="submit" aria-pressed="true">♥ {{ post.likes_count }} <span class="sr-only">Descurtir</span></button>
+          {% else %}
+            <button class="botao-icone" type="submit" aria-pressed="false">♡ {{ post.likes_count }} <span class="sr-only">Curtir</span></button>
+          {% endif %}
+        </form>
+      {% else %}
+        <span class="botao-icone">♡ {{ post.likes_count }}</span>
+      {% endif %}
+      <span class="botao-icone">💬 {{ post.comments_count }}</span>
+      {% if post.author == user %}
+        <form method="post" action="{% url 'apagar_post' post.id %}">
+          {% csrf_token %}
+          <input type="hidden" name="next" value="{{ request.get_full_path }}">
+          <button class="botao perigo pequeno" type="submit">Apagar</button>
+        </form>
+      {% endif %}
+    </div>
+
+    {% if post.comments.all or user.is_authenticated %}
+    <div class="comentarios">
+      {% for comentario in post.comments.all %}
+        <div class="comentario">
+          {% include "web/_avatar.html" with pessoa=comentario.author tamanho="pequeno" %}
+          <div class="balao">
+            <a href="{% url 'perfil' comentario.author.username %}" style="font-weight: 700; font-size: 13px; color: inherit; text-decoration: none">{{ comentario.author.name|default:comentario.author.username }}</a>
+            <p>{{ comentario.content }}</p>
+          </div>
+        </div>
+      {% endfor %}
+      {% if user.is_authenticated %}
+        <form class="form-linha" method="post" action="{% url 'comentar' post.id %}">
+          {% csrf_token %}
+          <input type="hidden" name="next" value="{{ request.get_full_path }}">
+          <label class="sr-only" for="comentar-{{ post.id }}">Escreva um comentário</label>
+          <input id="comentar-{{ post.id }}" type="text" name="content" maxlength="280" placeholder="Escreva um comentário" required>
+          <button class="botao secundario pequeno" type="submit">Enviar</button>
+        </form>
+      {% endif %}
+    </div>
+    {% endif %}
+  </div>
+</article>

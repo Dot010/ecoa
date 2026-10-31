@@ -1,0 +1,5 @@
+{% if pessoa.avatar %}
+  <img class="avatar {{ tamanho }}" src="{{ pessoa.avatar.url }}" alt="">
+{% else %}
+  <span class="avatar {{ tamanho }}" aria-hidden="true">{{ pessoa.name|default:pessoa.username|slice:":1"|upper }}</span>
+{% endif %}

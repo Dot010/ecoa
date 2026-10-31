@@ -3,6 +3,7 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 load_dotenv(BASE_DIR / ".env", encoding="utf-8-sig")
@@ -26,6 +27,7 @@ INSTALLED_APPS = [
     "rest_framework.authtoken",
     "accounts",
     "posts",
+    "web",
 ]
 
 AUTH_USER_MODEL = "accounts.User"
@@ -110,3 +112,6 @@ REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 10,
 }
+LOGIN_URL = "entrar"
+LOGIN_REDIRECT_URL = "timeline"
+LOGOUT_REDIRECT_URL = "entrar"

@@ -1,0 +1,24 @@
+{% extends "web/base.html" %}
+{% block titulo %}Entrar{% endblock %}
+
+{% block corpo %}
+<div class="acesso">
+  <div class="acesso-caixa">
+    <section class="acesso-texto">
+      <span class="marca">ecoa</span>
+      <h1>O que você pensa,<br>quem te segue escuta.</h1>
+      <p class="suave" style="font-size: 17px">Publique, siga pessoas, curta e comente.</p>
+    </section>
+    <section class="cartao acesso-form" aria-label="Entrar">
+      <h2 class="subtitulo">Entrar</h2>
+      <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="hidden" name="next" value="{{ next }}">
+        <button class="botao" type="submit" style="width: 100%">Entrar</button>
+      </form>
+      <p class="suave" style="margin-top: 16px">Ainda não tem conta? <a href="{% url 'cadastro' %}">Criar conta</a></p>
+    </section>
+  </div>
+</div>
+{% endblock %}

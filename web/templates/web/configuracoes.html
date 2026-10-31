@@ -1,0 +1,28 @@
+{% extends "web/base.html" %}
+{% block titulo %}Editar perfil{% endblock %}
+
+{% block conteudo %}
+<h1 class="titulo">Editar perfil</h1>
+<p class="suave" style="margin: 0">Preencha só o que quiser mudar. Nenhum campo é obrigatório.</p>
+
+<section class="cartao">
+  <h2 class="subtitulo">Perfil</h2>
+  <div class="pessoa" style="margin-bottom: 16px">
+    {% include "web/_avatar.html" with pessoa=user tamanho="grande" %}
+  </div>
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ perfil_form.as_p }}
+    <button class="botao" type="submit" name="salvar_perfil">Salvar perfil</button>
+  </form>
+</section>
+
+<section class="cartao">
+  <h2 class="subtitulo">Trocar senha</h2>
+  <form method="post">
+    {% csrf_token %}
+    {{ senha_form.as_p }}
+    <button class="botao" type="submit" name="trocar_senha">Trocar senha</button>
+  </form>
+</section>
+{% endblock %}

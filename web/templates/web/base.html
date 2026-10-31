@@ -1,0 +1,44 @@
+{% load static %}
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block titulo %}Ecoa{% endblock %} · Ecoa</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'web/ecoa.css' %}">
+</head>
+<body>
+  {% block corpo %}
+  <div class="pagina">
+    <nav class="menu" aria-label="Menu principal">
+      <a class="marca" href="{% url 'inicio' %}">ecoa</a>
+      {% if user.is_authenticated %}
+        <a class="menu-link {% if request.resolver_match.url_name == 'timeline' %}ativo{% endif %}" href="{% url 'timeline' %}">Início</a>
+        <a class="menu-link {% if request.resolver_match.url_name == 'perfil' and usuario == user %}ativo{% endif %}" href="{% url 'perfil' user.username %}">Perfil</a>
+        <a class="menu-link {% if request.resolver_match.url_name == 'configuracoes' %}ativo{% endif %}" href="{% url 'configuracoes' %}">Editar perfil</a>
+        <form method="post" action="{% url 'sair' %}">
+          {% csrf_token %}
+          <button class="botao secundario pequeno" type="submit">Sair (@{{ user.username }})</button>
+        </form>
+      {% else %}
+        <a class="menu-link" href="{% url 'entrar' %}">Entrar</a>
+        <a class="menu-link" href="{% url 'cadastro' %}">Criar conta</a>
+      {% endif %}
+    </nav>
+
+    <main class="principal">
+      {% for mensagem in messages %}
+        <div class="mensagem {{ mensagem.tags }}" role="status">{{ mensagem }}</div>
+      {% endfor %}
+      {% block conteudo %}{% endblock %}
+    </main>
+
+    <aside class="lateral">
+      {% block lateral %}{% endblock %}
+    </aside>
+  </div>
+  {% endblock %}
+</body>
+</html>
