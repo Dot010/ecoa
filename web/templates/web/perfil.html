@@ -1,0 +1,59 @@
+{% extends "web/base.html" %}
+{% block titulo %}@{{ usuario.username }}{% endblock %}
+
+{% block conteudo %}
+<section class="cartao">
+  <div class="capa" aria-hidden="true"></div>
+  <div class="cabecalho-perfil">
+    {% include "web/_avatar.html" with pessoa=usuario tamanho="grande" %}
+    {% if user == usuario %}
+      <a class="botao secundario" href="{% url 'configuracoes' %}">Editar perfil</a>
+    {% elif user.is_authenticated %}
+      <form method="post" action="{% url 'seguir' usuario.username %}">
+        {% csrf_token %}
+        <input type="hidden" name="next" value="{{ request.get_full_path }}">
+        {% if eu_sigo %}
+          <button class="botao secundario" type="submit">Seguindo</button>
+        {% else %}
+          <button class="botao" type="submit">Seguir</button>
+        {% endif %}
+      </form>
+    {% endif %}
+  </div>
+  <h1 class="titulo" style="margin-top: 12px">{{ usuario.name|default:usuario.username }}</h1>
+  <span class="suave">@{{ usuario.username }}</span>
+  {% if usuario.bio %}<p style="margin: 10px 0 0">{{ usuario.bio }}</p>{% endif %}
+  <div class="contadores">
+    <a href="?aba=seguindo"><strong>{{ usuario.following.count }}</strong> <span class="suave">seguindo</span></a>
+    <a href="?aba=seguidores"><strong>{{ usuario.followers.count }}</strong> <span class="suave">seguidores</span></a>
+  </div>
+  <nav class="abas" aria-label="Conteúdo do perfil">
+    <a class="aba {% if aba == 'posts' %}ativa{% endif %}" href="?aba=posts">Posts</a>
+    <a class="aba {% if aba == 'seguidores' %}ativa{% endif %}" href="?aba=seguidores">Seguidores</a>
+    <a class="aba {% if aba == 'seguindo' %}ativa{% endif %}" href="?aba=seguindo">Seguindo</a>
+  </nav>
+</section>
+
+{% if aba == "posts" %}
+  {% for post in pagina %}
+    {% include "web/_post.html" %}
+  {% empty %}
+    <div class="cartao vazio">Nenhum post ainda.</div>
+  {% endfor %}
+  {% include "web/_paginacao.html" %}
+{% else %}
+  <section class="cartao" style="display: flex; flex-direction: column; gap: 14px">
+    {% for pessoa in pessoas %}
+      <div class="pessoa">
+        {% include "web/_avatar.html" with pessoa=pessoa tamanho="pequeno" %}
+        <div class="pessoa-nome">
+          <a href="{% url 'perfil' pessoa.username %}">{{ pessoa.name|default:pessoa.username }}</a>
+          <span class="suave">@{{ pessoa.username }}</span>
+        </div>
+      </div>
+    {% empty %}
+      <p class="suave">Ninguém por aqui ainda.</p>
+    {% endfor %}
+  </section>
+{% endif %}
+{% endblock %}

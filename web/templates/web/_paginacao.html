@@ -1,0 +1,7 @@
+{% if pagina.has_other_pages %}
+<nav class="paginacao" aria-label="Páginas">
+  {% if pagina.has_previous %}<a class="botao secundario pequeno" href="?{% if aba %}aba={{ aba }}&{% endif %}page={{ pagina.previous_page_number }}">← Mais novos</a>{% else %}<span></span>{% endif %}
+  <span class="suave">Página {{ pagina.number }} de {{ pagina.paginator.num_pages }}</span>
+  {% if pagina.has_next %}<a class="botao secundario pequeno" href="?{% if aba %}aba={{ aba }}&{% endif %}page={{ pagina.next_page_number }}">Mais antigos →</a>{% else %}<span></span>{% endif %}
+</nav>
+{% endif %}

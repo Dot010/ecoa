@@ -1,0 +1,59 @@
+{% extends "web/base.html" %}
+{% block titulo %}Início{% endblock %}
+
+{% block conteudo %}
+<header>
+  <h1 class="titulo">Início</h1>
+  <span class="suave">Posts de quem você segue</span>
+</header>
+
+<section class="cartao" aria-label="Novo post">
+  <form method="post" action="{% url 'publicar' %}">
+    {% csrf_token %}
+    {{ post_form.as_p }}
+    <button class="botao" type="submit">Publicar</button>
+  </form>
+</section>
+
+{% for post in pagina %}
+  {% include "web/_post.html" %}
+{% empty %}
+  <div class="cartao vazio">
+    Seu feed está vazio. Siga algumas pessoas em "Quem seguir" para ver os posts delas aqui.
+  </div>
+{% endfor %}
+
+{% include "web/_paginacao.html" %}
+{% endblock %}
+
+{% block lateral %}
+<section class="cartao">
+  <h2 class="subtitulo">Você</h2>
+  <div class="contadores">
+    <a href="{% url 'perfil' user.username %}?aba=seguindo"><strong>{{ user.following.count }}</strong> <span class="suave">seguindo</span></a>
+    <a href="{% url 'perfil' user.username %}?aba=seguidores"><strong>{{ user.followers.count }}</strong> <span class="suave">seguidores</span></a>
+  </div>
+</section>
+
+<section class="cartao">
+  <h2 class="subtitulo">Quem seguir</h2>
+  <div style="display: flex; flex-direction: column; gap: 14px">
+    {% for pessoa in sugestoes %}
+      <div class="pessoa">
+        {% include "web/_avatar.html" with pessoa=pessoa tamanho="pequeno" %}
+        <div class="pessoa-nome">
+          <a href="{% url 'perfil' pessoa.username %}">{{ pessoa.name|default:pessoa.username }}</a>
+          <span class="suave">@{{ pessoa.username }}</span>
+        </div>
+        <form method="post" action="{% url 'seguir' pessoa.username %}">
+          {% csrf_token %}
+          <input type="hidden" name="next" value="{{ request.get_full_path }}">
+          <button class="botao pequeno" type="submit">Seguir</button>
+        </form>
+      </div>
+    {% empty %}
+      <p class="suave">Você já segue todo mundo por aqui.</p>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}
